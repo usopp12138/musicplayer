@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="mplayer.css">
+    <link rel="stylesheet" href="http://at.alicdn.com/t/font_1467618_zhyzgbmvmx.css">
+    <title>musicplayer</title>
+</head>
+<body>
+    <div class="wrapper">
+        <!---背景--->
+        <div class="musicbox">
+            <!---音乐播放器-->
+            <div class="firstbar">
+                <div class="pic">
+                    <img src="http://cloud.hunger-valley.com/17-9-22/28212907.jpg" alt="">
+                </div>
+            </div>  
+            <div class="secondbar">
+            
+                <div class="song">
+                    <p class="name">玫0瑰</p>
+                    <p class='author'>贰0佰</p>
+                </div>
+                <div class="bar">
+                    <div class="totallength"></div>
+                    <div class="current"></div>
+                </div>
+                <ul class="time clearfix">
+                    <li class="currenttime">0:00</li>
+                    <li class="totaltime">0:00</li>
+                </ul>
+                <ul class="btn clearfix">
+                    <li class="iconfont icon-pre"></li>
+                    <li class="iconfont icon-play"></li>
+                    <li class="iconfont icon-next"></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+
+function $(selector){
+    return document.querySelector(selector)
+};
+
+var currentIndex = 0;
+var audio = new Audio();
+audio.autoplay = true;//音乐自动播放
+
+//进度条
+audio.ontimeupdate = function(){
+    $('.bar .current').style.width = (this.currentTime/this.duration)*100+'%'
+}
+
+//移动进度条
+$('.bar').onclick = function (e){
+    console.log(e)
+    var percent = e.offsetX/parseInt(getComputedStyle(this).width);//点击所在位置除以进度条总长度
+    audio.currentTime= audio.duration*percent;
+   
+}
+
+//进度时间
+audio.onplay = function(){
+    //进度当前时间
+    clock =setInterval(function(){
+        var min = Math.floor(audio.currentTime/60);  //秒换算成分
+        var sec = Math.floor(audio.currentTime)%60+'';
+        sec = sec.length ===2?sec:'0' + sec;
+        $('.time .currenttime').innerText = min +':' +sec;
+    },1000)
+    //进度总时间
+    var min = Math.floor(audio.duration/60);  //秒换算成分
+    var sec = Math.floor(audio.duration)%60+'';
+    sec = sec.length ===2?sec:'0' + sec;
+    $('.time .totaltime').innerText = min +':' +sec;
+}
+
+//暂停
+audio.onpause= function(){
+    clearInterval(clock);
+}
+//歌曲最后自动播放下一首
+audio.onended = function(){
+    currentIndex = (++currentIndex)%musicList.length;//???
+    loadMusic(musicList(currentIndex));
+    
+}
+    
+
+//点击播放键暂停
+$('.btn .icon-play').onclick = function(){
+    if(audio.paused){
+        audio.play();
+        this.classList.add('icon-play');
+        this.classList.remove('icon-stop');
+
+    }else{
+        audio.pause();
+        this.classList.add('icon-stop');
+        this.classList.remove('icon-play');
+        
+    }
+}
+
+//点击下一首
+$('.btn .icon-next').onclick = function(){
+    currentIndex = (++currentIndex)%musicList.length;
+    loadMusic(musicList[currentIndex])
+}
+
+//点击上一首
+$('.btn .icon-pre').onclick = function(){
+    currentIndex = (--currentIndex+musicList.length)%musicList.length;
+    loadMusic(musicList[currentIndex]);
+}
+
+
+//获取数据
+function getMusicList(callback){
+    
+    var xhr = new XMLHttpRequest();
+    xhr.open('get','/desktop/musicplayer/music.json',true)
+    xhr.onload = function (){
+        if(xhr.status >= 200 || xhr.status < 300 && xhr.status == 304){
+            callback(JSON.parse(xhr.responseText))
+        }else{
+            console.log('服务器异常')
+        }
+    }
+    xhr.onerror = function(){
+        console.log('服务器异常')
+    }
+    xhr.send()
+}
+
+//获取音乐列表
+getMusicList(function(list){
+    musicList = list;//???
+    console.log(musicList)
+    loadMusic(list[currentIndex]);
+})
+
+//加载音乐列表
+function loadMusic(musicObj){
+    console.log('beignmusic',musicObj);
+    audio.src = musicObj.url;
+    $('.song .name').innerText = musicObj.name;
+    $('.song .author').innerText = musicObj.author;
+    $('.firstbar img').src = ''+musicObj.img+''; 
+
+}
+
+
+
+</script>

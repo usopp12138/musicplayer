@@ -1,0 +1,29 @@
+ [
+        {
+            "name":"玫瑰",
+            "url":"http://cloud.hunger-valley.com/music/玫瑰.mp3",
+            "author":"贰佰",
+            "img":"http://cloud.hunger-valley.com/17-9-22/28212907.jpg"
+        },
+        {
+            "name": "IF YOU1",
+            "url": "http://cloud.hunger-valley.com/music/ifyou.mp3",
+            "author": "Big Bang",
+            "img": "http://cloud.hunger-valley.com/17-9-22/87786461.jpg"
+
+        },
+        {
+            "name": "IF YOU2",
+            "url": "http://cloud.hunger-valley.com/music/ifyou.mp3",
+            "author": "Big Bang",
+            "img": "http://cloud.hunger-valley.com/17-9-22/87786461.jpg"
+
+        },
+        {
+            "name": "IF YOU3",
+            "url": "http://cloud.hunger-valley.com/music/ifyou.mp3",
+            "author": "Big Bang",
+            "img": "http://cloud.hunger-valley.com/17-9-22/87786461.jpg"
+
+        }
+    ]
